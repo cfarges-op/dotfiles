@@ -111,8 +111,10 @@ zinit light-mode lucid wait has"kubectl" for \
 zpcompinit
 alias k=kubectl
 
-autoload bashcompinit && bashcompinit
-autoload -U compinit && compinit
+autoload bashcompinit 
+bashcompinit
+autoload -U compinit 
+compinit
 
 zinit cdreplay -q # <- execute compdefs provided by rest of plugins
 #zinit cdlist
