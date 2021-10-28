@@ -30,14 +30,6 @@ zinit light-mode for \
 
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-
-#zinit light zdharma/fast-syntax-highlighting
-#zinit light zsh-users/zsh-autosuggestions
-#zinit light zsh-users/zsh-completions
-
 zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
       zdharma/fast-syntax-highlighting \
@@ -53,7 +45,7 @@ export HISTSIZE=10000000
 export SAVEHIST=10000000
 
 setopt hist_ignore_dups
-setopt hist_ignorespace
+setopt hist_ignore_space
 setopt hist_reduce_blanks
 setopt share_history
 
@@ -82,8 +74,8 @@ zinit load redxtech/zsh-asdf-direnv
 
 # append completions to fpath
 fpath=(${ASDF_DIR}/completions $fpath)
-#autoload bashcompinit && bashcompinit
-#autoload -U compinit && compinit
+
+
 function _asdf_install_latest(){
     PLUGIN=$1
       echo "Going to install latest version of $PLUGIN"
@@ -98,9 +90,7 @@ function apinstall(){
 
 # Completions
 
-#source <(kubectl completion zsh)
-
-
+# kubectl
 zinit light-mode lucid wait has"kubectl" for \
   id-as"kubectl_completion" \
   as"completion" \
@@ -111,11 +101,51 @@ zinit light-mode lucid wait has"kubectl" for \
 zpcompinit
 alias k=kubectl
 
+#zinit light-mode lucid wait has"aws" for \
+#  id-as"aws_completion" \
+#  as"completion" \
+#  atpull"complete -C 'aws_completer' aws" \
+#  run-atpull \
+#    zdharma/null
+
+zi wait"0c" lucid for \
+ has'aws_completer' as'null' \
+ id-as'aws_completion' \
+ atload'autoload -Uz bashcompinit && bashcompinit && complete -C "$(which aws_completer)" aws' \
+    zdharma/null
+
+zi wait"0c" lucid for \
+ has'tf_completer' as'null' \
+ id-as'tf_completion' \
+ atload'autoload -Uz bashcompinit && bashcompinit && complete -o nospace -C "$(which terraform)" terraform' \
+    zdharma/null
+
+
+#atload="complete -o nospace -C "$(which terraform)" terraform" \
+#  run-atpull \
+#    zdharma/null
+
+
+
 autoload bashcompinit 
 bashcompinit
 autoload -U compinit 
 compinit
 
+
+
 zinit cdreplay -q # <- execute compdefs provided by rest of plugins
-#zinit cdlist
+
+# Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
+# LOAD P10K LAST
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 
